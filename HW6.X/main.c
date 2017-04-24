@@ -66,21 +66,31 @@ int main() {
     
     char buffer[50];
     int counter = 0;
+    int frames = 0;
+    float FPS = 0;
     int time = _CP0_GET_COUNT();
+    int frame_time = _CP0_GET_COUNT();
+    
     
     while(1) {   
         
         sprintf(buffer,"Hello World! %d  ",counter);
         counter ++;
-        LCD_writeString(buffer,110,96,BLACK);
-        LCD_drawBar(counter, 110, 75,BLACK);
-        LCD_writeString("FPS: 5.0",90,60,RED);//The FPS will always be at 5 as long as the while loop stays there...
+        LCD_writeString(buffer,110,96,BLACK); //print hello world string
+        LCD_drawBar(counter, 110, 75,BLACK); // Print bar
+        sprintf(buffer,"FPS: %.2f  ",FPS);
+        LCD_writeString(buffer,90,60,RED);// print FPS
+        frames ++;
         
-        
-        if (counter == 101) {
+        if (counter == 101) { // if 100 go back to 0
             counter = 0;            
         }
-        while(_CP0_GET_COUNT() < time + 48000000/10) {;}
+        
+        FPS = ((float) frames)*24000000/(_CP0_GET_COUNT() - frame_time); // find the FPS 
+        frames = 0;
+        frame_time = _CP0_GET_COUNT();
+        
+        while(_CP0_GET_COUNT() < time + 48000000/10) {;}  //Maintain it at 5Hz      
         time = _CP0_GET_COUNT();
     }
     
