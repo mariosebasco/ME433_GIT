@@ -230,27 +230,69 @@ void LCD_writeString(char *inputStr, unsigned short x, unsigned short y, unsigne
 void LCD_drawBar(int number, unsigned short x, unsigned short y, unsigned short color,int dir) {
     //Let's make the bar height 4 pixels
     unsigned short height = 0x0F;
-    int i;
-    if (dir) { //direction being called is the X direction
-        for (i = 0;i <= 100; i++) {
-            if (i <= number) {
-                LCD_writeByte(height,x - i, y, color);
+    unsigned short ydir1 = 1;
+    unsigned short ydir2 = 0x80;
+    int i, j;    
+    int magnitude = ((int) (number/2));   
+    if (dir == XDIR) { //direction being called is the X direction
+        if (magnitude > 0) {
+            for (i = 0;i <= 100; i++) {
+                if (i <= magnitude) {
+                    LCD_writeByte(height,x + i, y, color);
+                }
+                else 
+                {
+                    LCD_writeByte(0x00, x + i, y, color);
+                }
             }
-            else 
-            {
-                LCD_writeByte(0x00, x - i, y, color);
+        }
+        else {
+            for (i = 0;i <= 100; i++) {
+                if (i <= -magnitude) {
+                    LCD_writeByte(height,x - i, y, color);
+                }
+                else 
+                {
+                    LCD_writeByte(0x00, x - i, y, color);
+                }
             }
+            
         }
     }
     else {
+        if (magnitude > 0) {
         for (i = 0;i <= 100; i++) {
-            if (i <= number) {
-                LCD_writeByte(height,x, y - i, color);
+            if (i <= magnitude) {
+                    for (j = 0; j < 4; j++) {
+                        LCD_writeByte(ydir2,x - j, y + i, color);
+                    }
+                }
+                else 
+                {   
+                    for(j = 0; j < 4; j++) {
+                        LCD_writeByte(0x00, x - j, y + i, color);
+                    }
+                    
+                } 
             }
-            else 
-            {
-                LCD_writeByte(0x00, x, y - i, color);
-            } 
         }
+        else {
+            for (i = 0;i <= 100; i++) 
+            {
+                if (i <= -magnitude) 
+                {
+                    for (j = 0; j < 4; j++) {
+                        LCD_writeByte(ydir1,x - j, y - i, color);
+                    }
+                }
+                else 
+                {   
+                    for(j = 0; j < 4; j++) {
+                        LCD_writeByte(0x00, x - j, y - i, color);
+                    }
+                    
+                } 
+            }
+        }                    
     }
 }

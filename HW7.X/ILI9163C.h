@@ -4,6 +4,8 @@
 #ifndef ILI9163C_H__
 #define ILI9163C_H__
 
+enum direction {XDIR,YDIR};
+
 // lookup table for all of the ascii characters
 static const char ASCII[96][5] = {
  {0x00, 0x00, 0x00, 0x00, 0x00} // 20  (space)

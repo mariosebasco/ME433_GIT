@@ -74,7 +74,7 @@ void IMU_init() {
     i2c_master_stop();
 }
 
-signed short concatenate(char LOW,char HIGH) {
+signed short concatenate(unsigned char LOW,unsigned char HIGH) {
     signed short concat_short;
     concat_short = (HIGH << 8) | LOW;
     
@@ -83,15 +83,7 @@ signed short concatenate(char LOW,char HIGH) {
 }
 
 void LCD_print_array(signed short *array) { //Print out the numbers for debugging
-    char buffer[200];
-    /*
-    sprintf(buffer,"temp: %d",array[0]);
-    LCD_writeString(buffer,110,110,BLACK);
-    sprintf(buffer,"Pitch: %d, Roll: %d, Yaw: %d",array[1],array[2],array[3]);
-    LCD_writeString(buffer,110,90,BLACK);
-    sprintf(buffer,"X: %d, Y: %d, Z: %d",array[4], array[5], array[6]);
-    LCD_writeString(buffer,110, 80, BLACK);   
-     */
+    char buffer[100];
     sprintf(buffer,"AX: %.2f   ",array[4]*0.0061);
     LCD_writeString(buffer,110,110,BLACK);
     sprintf(buffer,"AY: %.2f   ",array[5]*0.0061);
@@ -99,12 +91,17 @@ void LCD_print_array(signed short *array) { //Print out the numbers for debuggin
     sprintf(buffer,"AZ: %.2f   ",array[6]*0.0061);
     LCD_writeString(buffer,110,90,BLACK);
 }
-/*
-void LCD_print_IMU_bars(signed short *array) {
-    signed short max = 100;
 
+void LCD_print_IMU_bars(float AX, float AY) {
+    LCD_drawBar(AX,64,64,BLACK,XDIR);
+    LCD_drawBar(AY,64,64,BLACK,YDIR);
+    /*
+    char buffer[100];
+    sprintf(buffer,"AX: %.2f   ",AX);
+    LCD_writeString(buffer,110,110,BLACK);
+     */
 }
- */
+ 
 
 void IMU_read() {
     //Going to read all seven values -- temp, position, and angle
@@ -139,10 +136,10 @@ void IMU_read() {
     
     i2c_master_stop();
     //Now we have an array of shorts let's print them to the LCD screen
-    LCD_print_array(data_array); //Used it for testing and debugging
+    //LCD_print_array(data_array); //Used it for testing and debugging
     
     //Finally we can draw the bars on the screen
-    //LCD_print_IMU_bars(data_array);
+    LCD_print_IMU_bars(data_array[4]*0.0061, data_array[5]*0.0061);
 
 }
 
@@ -210,7 +207,7 @@ int main() {
          */        
         
         
-        while ((_CP0_GET_COUNT() - time) < 48000000/2) {;} //Keep it at 5HZ
+        while ((_CP0_GET_COUNT() - time) < 48000000/10) {;} //Keep it at 5HZ
         time = _CP0_GET_COUNT();
     }
     
