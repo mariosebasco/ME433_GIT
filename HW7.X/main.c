@@ -65,7 +65,13 @@ void IMU_init() {
     i2c_master_send((SLAVE_ADDR << 1));
     i2c_master_send(0x11);
     i2c_master_send(0b10001000);
-    i2c_master_stop();      
+    i2c_master_stop();   
+    
+    i2c_master_start(); //Now we're going to change the CTRL3_C register
+    i2c_master_send((SLAVE_ADDR << 1));
+    i2c_master_send(0x12);
+    i2c_master_send(0x04);
+    i2c_master_stop();
 }
 
 signed short concatenate(char LOW,char HIGH) {
@@ -77,7 +83,7 @@ signed short concatenate(char LOW,char HIGH) {
 }
 
 void LCD_print_array(signed short *array) { //Print out the numbers for debugging
-    char buffer[100];
+    char buffer[200];
     /*
     sprintf(buffer,"temp: %d",array[0]);
     LCD_writeString(buffer,110,110,BLACK);
@@ -86,20 +92,25 @@ void LCD_print_array(signed short *array) { //Print out the numbers for debuggin
     sprintf(buffer,"X: %d, Y: %d, Z: %d",array[4], array[5], array[6]);
     LCD_writeString(buffer,110, 80, BLACK);   
      */
-    sprintf(buffer,"AX: %d   ",array[1]);
+    sprintf(buffer,"AX: %.2f   ",array[4]*0.0061);
     LCD_writeString(buffer,110,110,BLACK);
+    sprintf(buffer,"AY: %.2f   ",array[5]*0.0061);
+    LCD_writeString(buffer,110,100,BLACK);
+    sprintf(buffer,"AZ: %.2f   ",array[6]*0.0061);
+    LCD_writeString(buffer,110,90,BLACK);
 }
-
-void LCD_print_IMU_bars() {
-    
+/*
+void LCD_print_IMU_bars(signed short *array) {
+    signed short max = 100;
 
 }
+ */
 
 void IMU_read() {
     //Going to read all seven values -- temp, position, and angle
     //These values are each 16 bytes so we need to grab them as 8 bytes and then concatenate them
-    char master_read_L;
-    char master_read_H;
+    unsigned char master_read_L;
+    unsigned char master_read_H;
     signed short concat_short;
     signed short data_array[7];
     int i;
@@ -128,10 +139,10 @@ void IMU_read() {
     
     i2c_master_stop();
     //Now we have an array of shorts let's print them to the LCD screen
-    //LCD_print_array(data_array); //Used it for testing and debugging
+    LCD_print_array(data_array); //Used it for testing and debugging
     
     //Finally we can draw the bars on the screen
-    LCD_print_IMU_bars(data_array);
+    //LCD_print_IMU_bars(data_array);
 
 }
 
@@ -167,10 +178,39 @@ int main() {
     //WHOAMI(); //Works well
     int time;
     time = _CP0_GET_COUNT();
+    //unsigned char debug1;
+    //unsigned char debug2;
+    //char buffer[100];
     
     while(1) {
         IMU_read();
-        while ((_CP0_GET_COUNT() - time) < 48000000/10) {;} //Keep it at 5HZ
+        /*
+        i2c_master_start();
+        i2c_master_send((SLAVE_ADDR << 1));
+        i2c_master_send(0x2C); //We are going to start by reading from the AZ register
+        i2c_master_restart();
+        i2c_master_send((SLAVE_ADDR << 1) | 1);
+        debug1 = i2c_master_recv();
+        i2c_master_ack(1);
+        i2c_master_stop();
+        
+        i2c_master_start();
+        i2c_master_send((SLAVE_ADDR << 1));
+        i2c_master_send(0x2D); //We are going to start by reading from the AZ register
+        i2c_master_restart();
+        i2c_master_send((SLAVE_ADDR << 1) | 1);
+        debug2 = i2c_master_recv();
+        i2c_master_ack(1);
+        i2c_master_stop();
+        
+        signed short AZ = ((debug2 << 8) | debug1);
+        
+        sprintf(buffer,"AZ: %d   ",AZ);
+        LCD_writeString(buffer,110,110,BLACK);
+         */        
+        
+        
+        while ((_CP0_GET_COUNT() - time) < 48000000/2) {;} //Keep it at 5HZ
         time = _CP0_GET_COUNT();
     }
     

@@ -180,7 +180,7 @@ void LCD_clearScreen(unsigned short); // set the color of every pixel
 void LCD_writeByte(unsigned short, unsigned short, unsigned short, unsigned short);
 void LCD_writeChar(char, unsigned short, unsigned short, unsigned short);
 void LCD_writeString(char *, unsigned short, unsigned short, unsigned short);
-void LCD_drawBar(int, unsigned short, unsigned short, unsigned short);
+void LCD_drawBar(int, unsigned short, unsigned short, unsigned short,int);
 
 
 #endif

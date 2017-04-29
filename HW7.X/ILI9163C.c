@@ -227,17 +227,30 @@ void LCD_writeString(char *inputStr, unsigned short x, unsigned short y, unsigne
     }
 }
 
-void LCD_drawBar(int number, unsigned short x, unsigned short y, unsigned short color) {
+void LCD_drawBar(int number, unsigned short x, unsigned short y, unsigned short color,int dir) {
     //Let's make the bar height 4 pixels
     unsigned short height = 0x0F;
     int i;
-    for (i = 0;i <= 100; i++) {
-        if (i <= number) {
-            LCD_writeByte(height,x - i, y, color);
+    if (dir) { //direction being called is the X direction
+        for (i = 0;i <= 100; i++) {
+            if (i <= number) {
+                LCD_writeByte(height,x - i, y, color);
+            }
+            else 
+            {
+                LCD_writeByte(0x00, x - i, y, color);
+            }
         }
-        else 
-        {
-            LCD_writeByte(0x00, x - i, y, color);
+    }
+    else {
+        for (i = 0;i <= 100; i++) {
+            if (i <= number) {
+                LCD_writeByte(height,x, y - i, color);
+            }
+            else 
+            {
+                LCD_writeByte(0x00, x, y - i, color);
+            } 
         }
     }
 }
