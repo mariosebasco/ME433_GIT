@@ -133,10 +133,10 @@
         </logicalFolder>
         <itemPath>../src/app.c</itemPath>
         <itemPath>../src/main.c</itemPath>
-        <itemPath>../src/ILI9163C.c</itemPath>
         <itemPath>../src/i2c_master_noint.c</itemPath>
-        <itemPath>../src/i2c_master_noint.h</itemPath>
+        <itemPath>../src/ILI9163C.c</itemPath>
         <itemPath>../src/ILI9163C.h</itemPath>
+        <itemPath>../src/i2c_master_noint.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="framework" projectFiles="true">
         <logicalFolder name="f2" displayName="driver" projectFiles="true">
@@ -197,7 +197,7 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC32</languageToolchain>
-        <languageToolchainVersion>1.42</languageToolchainVersion>
+        <languageToolchainVersion>1.40</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <compileType>
