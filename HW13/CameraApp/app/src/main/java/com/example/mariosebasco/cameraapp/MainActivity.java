@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.SeekBar;
 
 import java.io.IOException;
+import java.util.Random;
 
 import static android.graphics.Color.blue;
 import static android.graphics.Color.green;
@@ -37,6 +38,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
     int thresh = 0;
     SeekBar myControl;
+    //Random randomNumber = new Random(); //Just messing around
     //private int thresh;
 
     static long prevtime = 0; // for FPS calculation
@@ -138,6 +140,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
                 // in the row, see if there is more green than red
                 for (int i = 0; i < bmp.getWidth(); i++) {
                     if ((blue(pixels[i]) - red(pixels[i])) > thresh) {
+                        //int randomColor = randomNumber.nextInt(256);
                         pixels[i] = rgb(0, 0, 255); // over write the pixel with pure blue
                     }
                 }
