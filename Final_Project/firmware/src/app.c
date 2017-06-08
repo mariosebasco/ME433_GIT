@@ -374,8 +374,8 @@ void APP_Initialize(void) {
     TMR3 = 0;
     OC3CONbits.OCM = 0b110; // PWM mode without fault pin; other OC1CON bits are defaults
     OC3CONbits.OCTSEL = 1; // use timer3
-    OC3RS = 1700; // should set the motor to 90 degrees (0.5ms to 2.5ms is 1500 to 7500 for 0 to 180 degrees)
-    OC3R = 1700; // read-only
+    OC3RS = 4500; // should set the motor to 90 degrees (0.5ms to 2.5ms is 1500 to 7500 for 0 to 180 degrees)
+    OC3R = 4500; // read-only
     T3CONbits.ON = 1;
     OC3CONbits.ON = 1;      
     
@@ -500,7 +500,7 @@ void APP_Tasks(void) {
             appData.writeTransferHandle = USB_DEVICE_CDC_TRANSFER_HANDLE_INVALID;
             appData.isWriteComplete = false;
             appData.state = APP_STATE_WAIT_FOR_WRITE_COMPLETE;
-
+/*
             if (servo_count == 50) {
                     servo_count = 0;
                     if (OCCount == 7300)
@@ -517,7 +517,7 @@ void APP_Tasks(void) {
                         OC3RS = OCCount;
                     }                                        
                 }
-                servo_count ++;
+                servo_count ++;*/
             if (gotRx) {
                 len = sprintf(dataOut, "got: %d\r\n", rxVal);
                 
@@ -532,10 +532,16 @@ void APP_Tasks(void) {
                     if (rxVal >= 100) {
                         OC1RS = (int) MAX_PWM*(200 - rxVal)/100;
                         OC4RS = MAX_PWM;
+                        if (rxVal > 180) {
+                            OC3RS = 3000;
+                        }
                     }
                     else {
                         OC4RS = (int) MAX_PWM*rxVal/100;
                         OC1RS = MAX_PWM;
+                        if (rxVal < 20) {
+                            OC3RS = 5000;
+                        }
                     }
                 }
                 
